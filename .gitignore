@@ -131,3 +131,6 @@ dmypy.json
 # Data Directories
 sprites/
 data/
+
+# Various intermediary files
+pokemon_info.json
