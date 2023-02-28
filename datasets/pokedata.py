@@ -24,6 +24,8 @@ class PokemonDataset(Dataset):
         # image = read_image(img_path).type(torch.float32)
         image = Image.open(img_path)
 
+        # TODO: think through how we can mesh disparate auxiliary data into one unpacking stream
+        # EX: OHE types or egg_groups, open a mask image, etc. etc. 
         if self.labels:
             label_idxs = [self.df.columns.get_loc(label) for label in self.labels]
             target = self.df.iloc[idx, label_idxs]
