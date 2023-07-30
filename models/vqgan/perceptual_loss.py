@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from common.utils import ConvBlock
+from common.conv_blocks import ConvBlock
 
 """
 The idea is to use a model trained on some alternate task to compare two images
@@ -19,9 +19,9 @@ class TypeClassifier(nn.Module):
         out_cs = [2*i for i in in_cs]
 
         # (nc,96,96) -> (nf,48,48)
-        self.projection = ConvBlock(nc, nf, 4, 2, 1, normalize=False)
+        self.projection = ConvBlock(nc, nf, 4, 2, 1, use_norm=False)
         # (nf,48,48) -> (nf*2,24,24) -> (nf*4,12,12) -> (nf*8,6,6)
-        self.convolutions = nn.ModuleList([ConvBlock(in_c, out_c, 4, 2, 1, normalize=True)
+        self.convolutions = nn.ModuleList([ConvBlock(in_c, out_c, 4, 2, 1)
                                                     for in_c, out_c in zip(in_cs, out_cs)])
         # (nf*8,6,6) -> (n_types,1,1)
         self.head = nn.Sequential(
