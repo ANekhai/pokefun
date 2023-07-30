@@ -4,21 +4,23 @@ import torch.nn as nn
 # basic building blocks common between many neural networks
 
 class ConvBlock(nn.Module):
-    def __init__(self, in_c, out_c, k=3, s=1, p=1, use_norm=True):
+    def __init__(self, in_c, out_c, k=3, s=1, p=1, use_norm=True, apply_activation=True):
         super(ConvBlock, self).__init__()
         self.use_norm = use_norm
+        self.apply_activation = apply_activation
         self.conv = nn.Conv2d(in_c, out_c, kernel_size=k, stride=s, padding=p, bias=False)
-        self.relu = nn.ReLU(inplace=True)
+        if self.apply_activation: self.relu = nn.ReLU(inplace=True)
         if self.use_norm: self.norm = nn.BatchNorm2d(out_c)
 
     def forward(self, x):
         x = self.conv(x)
         if self.use_norm: x = self.norm(x)
-        return self.relu(x)
-
+        if self.apply_activation: x = self.relu(x)
+        return x
 
 class LeakyConvBlock(ConvBlock):
-    def __init__(self, in_c, out_c, k=3, s=1, p=1, use_norm=True, slope=0.2):
+    def __init__(self, in_c, out_c, k=3, s=1, p=1, use_norm=True, 
+                 slope=0.2, bias=False):
         super(LeakyConvBlock, self).__init__(in_c, out_c, k, s, p, use_norm)
         self.relu = nn.LeakyReLU(slope, inplace=True)
 
